@@ -1,84 +1,96 @@
 import React from 'react';
 
-const stats = [
-  { label: 'Repairs Analyzed', value: '37B+' },
-  { label: 'Avg Overcharge Rate', value: '68%' },
-  { label: 'Detection Accuracy', value: '85%' },
+const TABS = [
+  { id: 'analyze', label: 'Analysis' },
+  { id: 'history', label: 'History' },
+  { id: 'benchmarks', label: 'Benchmarks' },
 ];
 
-function Header({ theme, toggleTheme }) {
+export default function Header({ tab, setTab }) {
   return (
     <header style={{
+      borderBottom: '1px solid var(--border)',
+      background: 'var(--bg-1)',
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      background: 'var(--bg-secondary)',
-      borderBottom: '1px solid var(--border)',
-      boxShadow: 'var(--shadow)',
+      marginBottom: 32,
     }}>
       <div style={{
-        maxWidth: '1200px',
+        maxWidth: 1100,
         margin: '0 auto',
-        padding: '0 1.5rem',
+        padding: '0 24px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        height: '64px',
-        gap: '1rem',
+        height: 52,
+        gap: 32,
       }}>
         {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
           <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '8px',
-            background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.1rem',
-          }}>🔍</div>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)', lineHeight: 1.2 }}>
-              Repair Overcharge Detector
-            </div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Powered by LLaMA 3.3 70B</div>
-          </div>
+            width: 6, height: 6,
+            borderRadius: '50%',
+            background: 'var(--green)',
+            boxShadow: '0 0 8px var(--green)',
+          }} />
+          <span style={{
+            fontFamily: 'var(--mono)',
+            fontSize: 13,
+            fontWeight: 600,
+            color: 'var(--text)',
+            letterSpacing: '0.08em',
+          }}>ROD</span>
+          <span style={{
+            fontFamily: 'var(--mono)',
+            fontSize: 10,
+            color: 'var(--text-3)',
+            letterSpacing: '0.05em',
+          }}>v2.0</span>
         </div>
 
-        {/* Live Stats */}
-        <div style={{ display: 'flex', gap: '1.5rem' }}>
-          {stats.map(stat => (
-            <div key={stat.label} style={{ textAlign: 'center', display: window.innerWidth < 600 ? 'none' : 'block' }}>
-              <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-blue)' }}>{stat.value}</div>
-              <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{stat.label}</div>
-            </div>
+        {/* Divider */}
+        <div style={{ width: 1, height: 20, background: 'var(--border-2)' }} />
+
+        {/* Tabs */}
+        <nav style={{ display: 'flex', gap: 2 }}>
+          {TABS.map(t => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: '6px 14px',
+                borderRadius: 'var(--radius)',
+                fontFamily: 'var(--sans)',
+                fontSize: 13,
+                fontWeight: tab === t.id ? 500 : 400,
+                color: tab === t.id ? 'var(--text)' : 'var(--text-3)',
+                background: tab === t.id ? 'var(--bg-3)' : 'transparent',
+                cursor: 'pointer',
+                transition: 'all 0.15s',
+                letterSpacing: '0.01em',
+              }}
+            >{t.label}</button>
           ))}
-        </div>
+        </nav>
 
-        {/* Theme Toggle */}
-        <button
-          onClick={toggleTheme}
-          style={{
-            background: 'var(--bg-hover)',
-            border: '1px solid var(--border)',
-            borderRadius: '8px',
-            padding: '0.4rem 0.75rem',
-            color: 'var(--text-secondary)',
-            fontSize: '0.875rem',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            transition: 'all 0.2s',
-            flexShrink: 0,
-          }}
-        >
-          {theme === 'dark' ? '☀️' : '🌙'} {theme === 'dark' ? 'Light' : 'Dark'}
-        </button>
+        <div style={{ flex: 1 }} />
+
+        {/* Status */}
+        <div style={{
+          fontFamily: 'var(--mono)',
+          fontSize: 11,
+          color: 'var(--text-3)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+        }}>
+          <span>MULTI-MODEL CONSENSUS</span>
+          <span style={{ color: 'var(--border-2)' }}>|</span>
+          <span>LLaMA-3.3-70B + Mixtral-8x7B</span>
+        </div>
       </div>
     </header>
   );
 }
-
-export default Header;
