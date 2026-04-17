@@ -1,69 +1,35 @@
 import React, { useState } from 'react';
-import './App.css';
 import Header from './components/Header';
-import WorkOrderInput from './components/WorkOrderInput';
-import SampleOrders from './components/SampleOrders';
-import ResultsDashboard from './components/ResultsDashboard';
-import BenchmarkTable from './components/BenchmarkTable';
+import InputPanel from './components/InputPanel';
+import ResultsPanel from './components/ResultsPanel';
+import HistoryPanel from './components/HistoryPanel';
+import BenchmarkPanel from './components/BenchmarkPanel';
 
-function App() {
-  const [theme, setTheme] = useState('dark');
+export default function App() {
+  const [tab, setTab] = useState('analyze');
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('analyze');
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-  };
+  const [apiKey, setApiKey] = useState('');
 
   return (
-    <div className="app">
-      <Header theme={theme} toggleTheme={toggleTheme} />
-      
-      <main className="main-content">
-        {/* Tab Navigation */}
-        <div style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0' }}>
-          {['analyze', 'benchmarks'].map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              style={{
-                background: 'none',
-                border: 'none',
-                padding: '0.5rem 0',
-                fontSize: '0.95rem',
-                fontWeight: activeTab === tab ? 600 : 400,
-                color: activeTab === tab ? 'var(--accent-blue)' : 'var(--text-secondary)',
-                borderBottom: activeTab === tab ? '2px solid var(--accent-blue)' : '2px solid transparent',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                textTransform: 'capitalize',
-                marginBottom: '-1px',
-              }}
-            >
-              {tab === 'analyze' ? '🔍 Analyze Work Order' : '📊 Benchmark Rates'}
-            </button>
-          ))}
-        </div>
-
-        {activeTab === 'analyze' && (
+    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
+      <Header tab={tab} setTab={setTab} />
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px 48px' }}>
+        {tab === 'analyze' && (
           <>
-            <SampleOrders />
-            <WorkOrderInput
+            <InputPanel
+              apiKey={apiKey}
+              setApiKey={setApiKey}
               setResults={setResults}
               loading={loading}
               setLoading={setLoading}
             />
-            {results && <ResultsDashboard results={results} />}
+            {results && <ResultsPanel results={results} />}
           </>
         )}
-
-        {activeTab === 'benchmarks' && <BenchmarkTable />}
-      </main>
+        {tab === 'history' && <HistoryPanel />}
+        {tab === 'benchmarks' && <BenchmarkPanel />}
+      </div>
     </div>
   );
 }
-
-export default App;
