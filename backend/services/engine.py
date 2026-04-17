@@ -47,14 +47,19 @@ Format:
   "recommendations": ["<specific action>", "<specific action>"]
 }}
 
-Classification thresholds:
-- FAIR: within 15% of market average
-- SLIGHTLY_HIGH: 15-30% above average
-- OVERPRICED: 30-60% above average
-- SEVERELY_OVERPRICED: 60%+ above average
-- Overall FAIR: total within 15% of fair estimate
-- Overall INFLATED: 15-40% above
-- Overall SEVERELY_OVERCHARGED: 40%+ above"""
+Classification thresholds (apply strictly):
+Line item:
+- FAIR: within 25% of market average
+- SLIGHTLY_HIGH: 25-50% above average
+- OVERPRICED: 50-90% above average
+- SEVERELY_OVERPRICED: 90%+ above average
+
+Overall verdict:
+- FAIR: total within 25% of fair estimate — this is the expected result for most legitimate shops
+- INFLATED: total 25-60% above fair estimate
+- SEVERELY_OVERCHARGED: total 60%+ above fair estimate
+
+Critical: shop supplies, taxes, environmental fees, and diagnostic fees are standard — do not penalize for them. Labor at $80-$150/hr is normal. Only mark INFLATED if the total clearly and substantially exceeds market rates."""
 
 
 def parse_response(text: str) -> dict:
