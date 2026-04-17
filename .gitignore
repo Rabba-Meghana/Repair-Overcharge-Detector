@@ -4,4 +4,6 @@ build/
 __pycache__/
 *.pyc
 .DS_Store
+rod.db
+*.db
 dist/
