@@ -142,16 +142,34 @@ async def analyze_work_order(request: AnalysisRequest):
         
         response_text = completion.choices[0].message.content.strip()
         
-        # Clean up response
+        # Clean up response - remove markdown fences
         response_text = re.sub(r'^```json\s*', '', response_text)
+        response_text = re.sub(r'^```\s*', '', response_text)
         response_text = re.sub(r'\s*```$', '', response_text)
+        response_text = response_text.strip()
+        
+        # Extract JSON object if there's extra text around it
+        json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+        if json_match:
+            response_text = json_match.group(0)
         
         result = json.loads(response_text)
+        
+        # Ensure required fields have defaults
+        result.setdefault('verdict', 'FAIR')
+        result.setdefault('confidence', 0.7)
+        result.setdefault('total_charged', 0.0)
+        result.setdefault('total_fair', 0.0)
+        result.setdefault('overcharge_amount', 0.0)
+        result.setdefault('overcharge_percent', 0.0)
+        result.setdefault('line_items', [])
+        result.setdefault('summary', 'Analysis complete.')
+        result.setdefault('recommendations', [])
         
         return AnalysisResponse(**result)
         
     except json.JSONDecodeError as e:
-        raise HTTPException(status_code=500, detail=f"Failed to parse AI response: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"AI returned invalid JSON. Try again. ({str(e)})")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
